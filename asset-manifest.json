@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/gooey/static/css/main.a519d267.css",
+    "main.js": "/gooey/static/js/main.110b2d84.js",
+    "index.html": "/gooey/index.html",
+    "main.a519d267.css.map": "/gooey/static/css/main.a519d267.css.map",
+    "main.110b2d84.js.map": "/gooey/static/js/main.110b2d84.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a519d267.css",
+    "static/js/main.110b2d84.js"
+  ]
+}
