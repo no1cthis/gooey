@@ -1,0 +1,46 @@
+@import '../../scss/vars.scss';
+
+.wrapper{
+    display: flex;
+    margin-left: auto;
+    width: 60vw;
+    // height: 80vh;
+    background-color: $secondary-color;
+  }
+.text{
+  color:black;
+  font-size: 24px;
+  padding: 10px;
+}
+.image{
+  width: 450px;
+}
+
+@media (max-width: 1300px) {
+  .wrapper{
+    width: 70vw;
+  }
+}
+@media (max-width: 1200px) {
+  .wrapper{
+    width: 80vw;
+  }
+}
+@media (max-width: 1100px) {
+  .image{
+    width: 40%;
+  }
+}
+@media (max-width: 870px) {
+  .wrapper{
+    width: 100%;
+  }
+}
+@media (max-width: 700px) {
+  .wrapper{
+    display: block;
+  }
+  .image{
+    width: 100%;
+  }
+}

@@ -1,0 +1,33 @@
+@import '../../../scss/vars.scss';
+
+
+    .arrow{
+    background-image: url('https://global-uploads.webflow.com/5c9c9c646cf0969b319f264f/5d2ca94399a69034ce38ae9d_arrow-right.svg');
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    transition: 0.7s;
+
+   
+}
+.circle{
+    background-image: url('https://global-uploads.webflow.com/5c9c9c646cf0969b319f264f/5d14825f86e4befdfbe0b0c2_ink-container.svg');
+    width: 70px;
+    height: 70px;
+    transition: 1s;
+}
+.wrapper{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: $secondary-color;
+    font-size: 24px;
+    text-transform: uppercase;
+    cursor: none;
+}
+.text{
+    margin-right: 10px;
+    }
+

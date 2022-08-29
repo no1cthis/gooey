@@ -1,0 +1,32 @@
+$cursor-size: 28px;
+$cursor-color: #fff;
+html{
+  cursor: none;
+}
+
+
+.cursor {
+  position: fixed;
+  top: calc($cursor-size * -0.5);
+  left:  calc($cursor-size * -0.5);
+  pointer-events: none;
+  mix-blend-mode: difference;  
+  filter: url(#goo);
+  z-index: 100000;
+}
+
+.cursor-circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $cursor-size;
+  height: $cursor-size;
+  border-radius: $cursor-size;
+  background: $cursor-color;
+  transform-origin: center center;
+  z-index: 100000;
+}
+
+.goo {
+  display: none;
+}

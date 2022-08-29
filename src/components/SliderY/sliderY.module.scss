@@ -1,0 +1,30 @@
+.wrapper{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 50vw;
+    height: 100vh;
+    // margin: 0 auto;
+    overflow: hidden;
+
+    
+
+    &__inner{
+        position: absolute;
+        top:0;
+        width: 95%;
+    }
+}
+.container{
+    display: flex;
+    justify-content: center;
+    cursor:grab;
+    &:active{
+        cursor: grabbing;
+    }
+}
+
+.item{
+    margin-top: 0px;
+    width: 100% !important;
+}

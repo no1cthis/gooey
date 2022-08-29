@@ -1,0 +1,48 @@
+.wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin: 100px 0;
+    margin-left: auto;
+}
+.author{
+font-size: 24px;
+
+&__wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100px;
+    margin-right: 50px;
+    overflow: hidden;
+}
+}
+
+.quote{
+    width: 30vw;
+    font-size: 18px;
+    &__wrapper{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100px;
+        margin-right: 50px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 950px) {
+    .quote{
+        width: 50vw;
+
+        }
+  }
+@media (max-width: 700px) {
+    .quote__wrapper{
+            height: 150px;
+        }
+    .author__wrapper{
+        width: 100px;
+        margin-right: 20px;
+    }
+  }
