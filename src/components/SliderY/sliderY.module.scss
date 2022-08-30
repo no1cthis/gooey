@@ -4,7 +4,6 @@
     justify-content: center;
     width: 50vw;
     height: 100vh;
-    // margin: 0 auto;
     overflow: hidden;
 
     
@@ -27,4 +26,10 @@
 .item{
     margin-top: 0px;
     width: 100% !important;
+}
+
+@media (max-width: 660px) {
+    .wrapper{
+        width: 90vw;
+    }
 }

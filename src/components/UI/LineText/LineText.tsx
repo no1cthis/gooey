@@ -1,5 +1,3 @@
-// keep scrolling  ·  text sample  ·
-
 import gsap, { Linear } from "gsap";
 import { useEffect, useRef } from "react";
 import cl from "./lineText.module.scss";

@@ -8,14 +8,10 @@
     width: 1050px;
   }
 .firstline{
-    // width: 100%;
     margin-left: auto;
     text-align: right !important;
 }
 .line{
-    // display: flex;
-    // width: 100%;
-    // text-align: center ;
     &__wrapper{
         overflow: hidden;
     }

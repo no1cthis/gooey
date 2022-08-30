@@ -1,5 +1,5 @@
-import gsap, { Linear } from "gsap";
-import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useEffect, useRef } from "react";
 import cl from "./wiseWords.module.scss";
 
 interface WiseWordsProps {}

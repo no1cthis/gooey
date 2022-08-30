@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import back from "./place1.jpg";
 import cl from "./erasableImage.module.scss";
 
 interface ErasableImageProps {
@@ -22,22 +21,27 @@ const ErasableImage: React.FC<ErasableImageProps> = ({
   const ctx = useRef<CanvasRenderingContext2D | null | undefined>(null),
     pi2 = Math.PI * 2;
   const img = useRef(new Image());
+  const [loadedImage, setLoadedImage] = useState(false);
+  const [loadedBackground, setLoadedBackground] = useState(false);
 
   useEffect(() => {
-    if (canvas.current) {
-      canvas.current.style.background = `url(${backgroundImageSource})`;
-      canvas.current.style.backgroundSize = `${width}px ${height}px`;
-    }
     ctx.current = canvas.current?.getContext("2d");
-    img.current.src =
-      imageSource
-    img.current.onload = start;
+    img.current.src = imageSource;
+    img.current.onload = () => setLoadedImage(true);
+    const back = new Image();
+    if (backgroundImageSource) back.src = backgroundImageSource;
+    back.onload = () => setLoadedBackground(true);
+    img.current.onload = () => setLoadedImage(true);
   }, [width]);
 
   function start() {
     if (!canvas.current || !ctx.current) return;
     canvas.current.width = width;
     canvas.current.height = height;
+    if (canvas.current) {
+      canvas.current.style.backgroundImage = `url(${backgroundImageSource})`;
+      canvas.current.style.backgroundSize = `${width}px ${height}px`;
+    }
     if (canvas.current.width && canvas.current.height)
       ctx.current?.drawImage(
         img.current,
@@ -50,6 +54,10 @@ const ErasableImage: React.FC<ErasableImageProps> = ({
     canvas.current.onmousemove = handleMouseMove;
   }
 
+  useEffect(() => {
+    if (!loadedImage || !loadedBackground) return;
+    start();
+  }, [loadedImage, loadedBackground, width]);
   function handleMouseMove(e: MouseEvent) {
     const pos = getXY(e);
     if (pos) erase(pos.x, pos.y);

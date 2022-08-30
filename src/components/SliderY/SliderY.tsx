@@ -1,19 +1,19 @@
 import gsap, { Linear } from "gsap";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import cl from "./sliderY.module.scss";
 
 interface SliderYProps {
-  setLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   loaded: boolean;
 }
 
-const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
+const SliderY: React.FC<SliderYProps> = ({ loaded }) => {
   const isPressed = useRef(false);
   const ref1 = useRef<HTMLDivElement>(null);
   const innerRef1 = useRef<HTMLDivElement>(null);
   const ref2 = useRef<HTMLDivElement>(null);
   const innerRef2 = useRef<HTMLDivElement>(null);
+  const images = useRef<HTMLImageElement[]>([]);
   const startY = useRef(0);
   const top1 = useRef(0);
   const top2 = useRef(0);
@@ -23,10 +23,7 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
   const smoothId = useRef(0);
   const observerId = useRef(0);
   const animation = useRef<gsap.core.Tween[]>([]);
-  const loadedRef = useRef<boolean[]>([]);
   const sliderReturning = useRef<boolean[]>([]);
-
-  // const [loaded, setLoaded] = useState(false);
 
   let images1: (string | JSX.Element)[] = [
     "https://i.redd.it/tlq6lrfkzak51.png",
@@ -47,63 +44,57 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
 
   images1 = images1.map((src, i) => (
     <img
+      ref={(el) => {
+        if (el) images.current[i] = el;
+      }}
+      onDragStart={(e) => e.preventDefault()}
       key={typeof src === "string" ? src : ""}
       className={cl.item}
       src={typeof src === "string" ? src : ""}
-      onLoad={() => {
-        loadedRef.current[i] = true;
-      }}
+      alt={`image${i}`}
     ></img>
   ));
-  images2 = images2.map((src, i) => (
-    <img
-      key={typeof src === "string" ? src : ""}
-      className={cl.item}
-      src={typeof src === "string" ? src : ""}
-      onLoad={() => {
-        loadedRef.current[i + images1.length] = true;
-      }}
-    ></img>
-  ));
+
+  images2 = images2.map((src, i) => {
+    const ind = i + images1.length;
+    return (
+      <img
+        ref={(el) => {
+          if (el) images.current[ind] = el;
+        }}
+        onDragStart={(e) => e.preventDefault()}
+        key={typeof src === "string" ? src : ""}
+        className={cl.item}
+        src={typeof src === "string" ? src : ""}
+        alt={`image${ind}`}
+      ></img>
+    );
+  });
 
   const start = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (
-      !ref1.current ||
-      !innerRef1.current ||
-      !ref2.current ||
-      !innerRef2.current
-      // (sliderReturning.current[0] && sliderReturning.current[1])
-    )
-      return;
-
-    console.log(sliderReturning.current[0], sliderReturning.current[1]);
+    if (!ref1.current || !innerRef1.current) return;
 
     sliderReturning.current[0] = false;
     sliderReturning.current[1] = false;
 
     cancelAnimationFrame(smoothId.current);
     animation.current[0].kill();
-    animation.current[1].kill();
+    if (innerRef2.current) animation.current[1].kill();
     sliderReturning.current[0] = false;
     sliderReturning.current[1] = false;
 
     isPressed.current = true;
     top1.current = parseInt(innerRef1.current.style.top);
-    top2.current = parseInt(innerRef2.current.style.top);
+
     const rect = ref1.current.getBoundingClientRect();
     startY.current = e.nativeEvent.clientY - rect.top;
+    if (!ref2.current || !innerRef2.current) return;
+    top2.current = parseInt(innerRef2.current.style.top);
   };
   const onMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
 
-    if (
-      !isPressed.current ||
-      !ref1.current ||
-      !ref2.current ||
-      !innerRef1.current ||
-      !innerRef2.current
-    )
-      return;
+    if (!isPressed.current || !ref1.current || !innerRef1.current) return;
     const rect1 = ref1.current.getBoundingClientRect();
 
     yHistory.current.shift();
@@ -112,12 +103,16 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
     const newTop1 =
       top1.current -
       (startY.current - (e.nativeEvent.clientY - rect1.top)) * 1.5;
-
     innerRef1.current.style.top = `${
       top1.current - (top1.current - newTop1)
     }px`;
+
+    if (!ref2.current || !innerRef2.current) return;
+    const newTop2 =
+      top2.current -
+      (startY.current - (e.nativeEvent.clientY - rect1.top)) * 1.5;
     innerRef2.current.style.top = `${
-      top2.current + (top1.current - newTop1)
+      top2.current + (top2.current - newTop2)
     }px`;
   };
 
@@ -136,7 +131,6 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
   const cancelSmooth = () => {
     cancelAnimationFrame(smoothId.current);
     yHistory.current = yHistory.current.map(() => 0);
-    console.log("stop Smooth", yHistory.current);
     if (!sliderReturning.current.includes(false)) return;
     else if (sliderReturning.current[0]) animationStart(2);
     else if (sliderReturning.current[1]) animationStart(1);
@@ -144,90 +138,34 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
   };
 
   const smooth = () => {
-    if (
-      !innerRef1.current ||
-      !innerRef2.current ||
-      !ref1.current ||
-      !ref2.current
-    )
-      return;
+    if (!innerRef1.current || !ref1.current) return;
 
-    console.log("smooth");
     yHistory.current.shift();
     yHistory.current.push(0);
     speed.current -= 2;
     top1.current = parseInt(innerRef1.current.style.top);
-    top2.current = parseInt(innerRef2.current.style.top);
+
     const newTop1 =
       direction.current < 0
         ? top1.current + speed.current * 0.05
         : top1.current - speed.current * 0.05;
-    const newTop2 =
-      direction.current < 0
-        ? top2.current - speed.current * 0.05
-        : top2.current + speed.current * 0.05;
-
     innerRef1.current.style.top = `${newTop1}px`;
-    innerRef2.current.style.top = `${newTop2}px`;
 
-    //borders 1
-    // if (
-    //   window.innerHeight - top1.current < window.innerHeight / 2 ||
-    //   (speed.current < 0 &&
-    //     window.innerHeight - top1.current < window.innerHeight)
-    // ) {
-    //   animation.current[0].kill();
-    //   animation.current[0] = gsap.to(innerRef1.current, {
-    //     top: -innerRef1.current.clientHeight / 2,
-    //     duration: 3,
-    //   });
-    // }
-
-    // if (
-    //   window.innerHeight - top1.current >
-    //     innerRef1.current.clientHeight + window.innerHeight / 2 ||
-    //   (speed.current < 0 &&
-    //     window.innerHeight - top1.current > innerRef1.current.clientHeight)
-    // ) {
-    //   animation.current[0].kill();
-    //   animation.current[0] = gsap.to(innerRef1.current, {
-    //     top: -innerRef1.current.clientHeight / 2,
-    //     duration: 3,
-    //   });
-    // }
-
-    //borders 2
-    // if (
-    //   window.innerHeight - top2.current < window.innerHeight / 2 ||
-    //   (speed.current < 0 &&
-    //     window.innerHeight - top2.current < window.innerHeight)
-    // ) {
-    //   animation.current[1].kill();
-    //   animation.current[1] = gsap.to(innerRef2.current, {
-    //     top: -innerRef2.current.clientHeight / 2,
-    //     duration: 3,
-    //   });
-    // }
-
-    // if (
-    //   window.innerHeight - top2.current >
-    //     innerRef2.current.clientHeight + window.innerHeight / 2 ||
-    //   (speed.current < 0 &&
-    //     window.innerHeight - top2.current > innerRef2.current.clientHeight)
-    // ) {
-    //   animation.current[1].kill();
-    //   animation.current[1] = gsap.to(innerRef2.current, {
-    //     top: -innerRef2.current.clientHeight / 2,
-    //     duration: 3,
-    //   });
-    // }
+    if (innerRef2.current && ref2.current) {
+      top2.current = parseInt(innerRef2.current.style.top);
+      const newTop2 =
+        direction.current < 0
+          ? top2.current - speed.current * 0.05
+          : top2.current + speed.current * 0.05;
+      innerRef2.current.style.top = `${newTop2}px`;
+    }
 
     smoothId.current = requestAnimationFrame(smooth);
     if (speed.current <= 0) cancelSmooth();
   };
 
   const animationStart = (option: number = 0) => {
-    if (!innerRef2.current || !innerRef1.current) return;
+    if (!innerRef1.current) return;
 
     switch (option) {
       case 0: {
@@ -239,7 +177,7 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
             60,
           ease: Linear.easeNone,
         });
-
+        if (!innerRef2.current) return;
         animation.current[1] = gsap.to(innerRef2.current, {
           top: -(innerRef2.current.clientHeight - window.innerHeight),
           duration:
@@ -252,12 +190,6 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
         break;
       }
       case 1: {
-        console.log(
-          "1",
-
-          parseInt(innerRef1.current?.style.top) /
-            (-innerRef1.current?.clientHeight + window.innerHeight)
-        );
         animation.current[0] = gsap.to(innerRef1.current, {
           top: 0,
           duration:
@@ -270,7 +202,7 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
         break;
       }
       case 2: {
-        console.log("2");
+        if (!innerRef2.current) return;
         animation.current[1] = gsap.to(innerRef2.current, {
           top: -(innerRef2.current.clientHeight - window.innerHeight),
           duration:
@@ -286,11 +218,10 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
   };
 
   const observer = () => {
-    if (!innerRef2.current || !innerRef1.current) return;
+    if (!innerRef1.current) return;
     const top1 = parseInt(innerRef1.current.style.top);
-    const top2 = parseInt(innerRef2.current.style.top);
-
-    console.log(top2, -innerRef2.current?.clientHeight + window.innerHeight);
+    let top2 = 0;
+    if (innerRef2.current) top2 = parseInt(innerRef2.current.style.top);
 
     if (
       (top1 >= 0 ||
@@ -310,13 +241,12 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
       });
     }
     if (
+      innerRef2.current &&
       (top2 >= 0 ||
         top2 <= -innerRef2.current?.clientHeight + window.innerHeight) &&
       !isPressed.current &&
       !sliderReturning.current[1]
     ) {
-      // finish();
-      console.log("2");
       sliderReturning.current[1] = true;
       animation.current[1].kill();
       animation.current[1] = gsap.to(innerRef2.current, {
@@ -329,49 +259,26 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
       });
     }
 
-    if (
-      (innerRef1.current.style.top >= "0px" ||
-        innerRef2.current?.style.top >=
-          `${-innerRef2.current?.clientHeight + window.innerHeight}px`) &&
-      !isPressed.current
-    ) {
-      console.log("if");
-      innerRef1.current.style.pointerEvents = "none";
-      innerRef2.current.style.pointerEvents = "none";
-      speed.current = 0;
-    } else {
-      if (!innerRef1.current || !innerRef2.current) return;
-      innerRef1.current.style.pointerEvents = "all";
-      innerRef2.current.style.pointerEvents = "all";
-    }
     observerId.current = requestAnimationFrame(observer);
   };
 
   const init = () => {
-    if (!innerRef1.current || !innerRef2.current) return;
-    innerRef1.current.style.top = `${-innerRef1.current.clientHeight / 2}px`;
-    innerRef2.current.style.top = `${-innerRef2.current.clientHeight / 2}px`;
+    if (innerRef1.current)
+      innerRef1.current.style.top = `${-innerRef1.current.clientHeight / 2}px`;
+    if (innerRef2.current)
+      innerRef2.current.style.top = `${-innerRef2.current.clientHeight / 2}px`;
     animationStart();
   };
 
-  const isLoaded = () => {
-    const id = requestAnimationFrame(isLoaded);
-
-    if (!loadedRef.current.includes(false)) {
-      setLoaded(true);
+  useEffect(() => {
+    if (loaded) {
       observer();
       init();
-      cancelAnimationFrame(id);
     }
-  };
+  }, [loaded]);
 
   useEffect(() => {
     for (let i = 0; i < 20; i++) yHistory.current.push(0);
-
-    for (let i = 0; i < images1.length + images2.length; i++)
-      loadedRef.current[i] = false;
-
-    isLoaded();
     return () => {
       cancelAnimationFrame(observerId.current);
     };
@@ -391,22 +298,24 @@ const SliderY: React.FC<SliderYProps> = ({ setLoaded, loaded }) => {
           }}
           ref={innerRef1}
         >
-          {images1}
+          {window.innerWidth > 660 ? images1 : [...images1, ...images2]}
         </div>
       </div>
 
-      <div className={cl.wrapper} ref={ref2}>
-        <div
-          className={cl.wrapper__inner}
-          onMouseDown={start}
-          onMouseUp={finish}
-          onMouseMove={onMove}
-          onMouseLeave={finish}
-          ref={innerRef2}
-        >
-          {images2}
+      {window.innerWidth > 660 && (
+        <div className={cl.wrapper} ref={ref2}>
+          <div
+            className={cl.wrapper__inner}
+            onMouseDown={start}
+            onMouseUp={finish}
+            onMouseMove={onMove}
+            onMouseLeave={finish}
+            ref={innerRef2}
+          >
+            {images2}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

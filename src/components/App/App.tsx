@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import cl from "./app.module.scss";
 import ErasableImage from "../UI/ErasableImage/ErasableImage";
 import Cursor from "../UI/Cursor/Cursor";
@@ -12,7 +12,11 @@ import SliderY from "../SliderY/SliderY";
 import SliderX from "../SliderX/SliderX";
 import { useResizeDetector } from "react-resize-detector";
 import LoadingScreen from "../UI/Loading/LoadingScreen";
-import { finished } from "stream";
+
+import photo1 from "../../assets/photo1.jpg";
+import back1 from "../../assets/back1.jpg";
+import photo2 from "../../assets/photo2.jpg";
+import back2 from "../../assets/back2.jpg";
 
 function App() {
   let firtsLine: string | JSX.Element[] = "sample";
@@ -23,8 +27,6 @@ function App() {
   const images = useRef<(HTMLDivElement | null)[]>([]);
   const letters = useRef<(HTMLSpanElement | null)[]>([]);
   const loadingScreen = useRef<HTMLDivElement>(null);
-
-  console.log(loaded);
 
   const { ref: container, width: widthContainer } = useResizeDetector();
 
@@ -51,9 +53,7 @@ function App() {
   secondLine = letterSpansFromString(secondLine, firtsLine.length);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (widthContainer) setWidthImage(widthContainer * 0.4);
-    }, 200);
+    if (widthContainer) setWidthImage(widthContainer * 0.4);
   }, [widthContainer]);
 
   const init = () => {
@@ -84,15 +84,21 @@ function App() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (!loaded || !loadingScreen.current) return;
     gsap
       .to(loadingScreen.current, {
-        top: -loadingScreen.current.clientWidth,
-        duration: 0.3,
+        opacity: 0,
+        duration: 1,
+        zIndex: -1000,
       })
       .then(() => init());
   }, [loaded]);
+
+  useEffect(() => {
+    window.addEventListener("load", () => setLoaded(true));
+  }, []);
+
+  console.log("test", loaded);
   return (
     <div>
       <div className={cl.container} ref={container}>
@@ -109,8 +115,10 @@ function App() {
             <ErasableImage
               height={widthImage * (12 / 9)}
               width={widthImage}
-              imageSource="http://i.share.pho.to/3f8db35a_o.jpeg"
-              backgroundImageSource="https://i.pinimg.com/564x/9d/e6/e0/9de6e0392088ecd7bd882f273caf75d1.jpg"
+              imageSource={photo1}
+              // "http://i.share.pho.to/3f8db35a_o.jpeg"
+              backgroundImageSource={back1}
+              //"https://i.pinimg.com/564x/9d/e6/e0/9de6e0392088ecd7bd882f273caf75d1.jpg"
               radius={20}
             />
           </div>
@@ -121,8 +129,10 @@ function App() {
             <ErasableImage
               height={widthImage * (12 / 9)}
               width={widthImage}
-              backgroundImageSource="http://i.share.pho.to/f936131f_o.jpeg"
-              imageSource="https://i.pinimg.com/564x/cd/77/06/cd770680b7cf717edb31b3c11e487718.jpg"
+              backgroundImageSource={back2}
+              // "http://i.share.pho.to/f936131f_o.jpeg"
+              imageSource={photo2}
+              // "https://i.pinimg.com/564x/cd/77/06/cd770680b7cf717edb31b3c11e487718.jpg"
             />
           </div>
         </div>
@@ -142,7 +152,7 @@ function App() {
         <WiseWords />
       </div>
 
-      <SliderY setLoaded={setLoaded} loaded={loaded} />
+      <SliderY loaded={loaded} />
       <SliderX />
       <LoadingScreen ref={loadingScreen} />
 

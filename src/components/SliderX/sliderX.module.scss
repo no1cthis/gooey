@@ -14,7 +14,6 @@
         position: absolute;
         top:0;
         left:0;
-    //    cursor: none;
     }
 }
 
@@ -33,7 +32,7 @@
     left: 50%;
     transform: translateX(-50%);
     pointer-events: none;
-    z-index: 10000;
+    z-index: 9000;
 }
 
 .buttons{

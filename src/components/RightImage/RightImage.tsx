@@ -9,11 +9,11 @@ const RightImage: React.FC<RightImageProps> = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log(ref.current?.clientWidth);
+
     gsap.registerPlugin(ScrollTrigger);
     gsap.from(ref.current, {
       xPercent: ref.current?.clientWidth,
-      duration: 1,
+      opacity: 0,
       scrollTrigger: {
         trigger: ref.current,
         start: `top center`,
