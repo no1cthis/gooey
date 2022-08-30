@@ -14,6 +14,7 @@
 }
 .circle{
     background-image: url('https://global-uploads.webflow.com/5c9c9c646cf0969b319f264f/5d14825f86e4befdfbe0b0c2_ink-container.svg');
+    background-repeat: no-repeat;
     width: 70px;
     height: 70px;
     transition: 1s;
@@ -30,4 +31,10 @@
 .text{
     margin-right: 10px;
     }
+
+    @media (max-width: 360px){
+    .wrapper{
+        font-size: 20px
+    }
+}
 

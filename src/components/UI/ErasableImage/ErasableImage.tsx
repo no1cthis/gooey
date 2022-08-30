@@ -33,6 +33,10 @@ const ErasableImage: React.FC<ErasableImageProps> = ({
     back.onload = () => setLoadedBackground(true);
     img.current.onload = () => setLoadedImage(true);
   }, [width]);
+  useEffect(() => {
+    if (!loadedImage || !loadedBackground) return;
+    start();
+  }, [loadedImage, loadedBackground, width]);
 
   function start() {
     if (!canvas.current || !ctx.current) return;
@@ -52,18 +56,9 @@ const ErasableImage: React.FC<ErasableImageProps> = ({
       );
     ctx.current.globalCompositeOperation = "destination-out";
     canvas.current.onmousemove = handleMouseMove;
+    canvas.current.ontouchmove = handleTouchMove;
   }
-
-  useEffect(() => {
-    if (!loadedImage || !loadedBackground) return;
-    start();
-  }, [loadedImage, loadedBackground, width]);
-  function handleMouseMove(e: MouseEvent) {
-    const pos = getXY(e);
-    if (pos) erase(pos.x, pos.y);
-  }
-
-  function getXY(e: MouseEvent) {
+  function getCursorXY(e: MouseEvent) {
     const rect = canvas.current?.getBoundingClientRect();
 
     if (!rect || !canvas.current) return;
@@ -73,6 +68,26 @@ const ErasableImage: React.FC<ErasableImageProps> = ({
       y: e.pageY - rect.top - window.scrollY,
     };
   }
+  function getTouchXY(e: TouchEvent) {
+    const rect = canvas.current?.getBoundingClientRect();
+
+    if (!rect || !canvas.current) return;
+
+    return {
+      x: e.touches[0].pageX - rect.left - window.scrollX,
+      y: e.touches[0].pageY - rect.top - window.scrollY,
+    };
+  }
+  function handleMouseMove(e: MouseEvent) {
+    const pos = getCursorXY(e);
+    if (pos) erase(pos.x, pos.y);
+  }
+  function handleTouchMove(e: TouchEvent) {
+    e.preventDefault();
+    const pos = getTouchXY(e);
+    if (pos) erase(pos.x, pos.y);
+  }
+
   function erase(x: number, y: number) {
     if (!ctx.current || !canvas.current) return;
 

@@ -26,7 +26,7 @@ const SliderY: React.FC<SliderYProps> = ({ loaded }) => {
   const sliderReturning = useRef<boolean[]>([]);
 
   let images1: (string | JSX.Element)[] = [
-    "https://i.redd.it/tlq6lrfkzak51.png",
+    "https://cdnb.artstation.com/p/assets/images/images/021/256/645/large/skiegraphic-studio-camera2.jpg?1570991815",
     "https://c0.wallpaperflare.com/preview/900/707/759/shinjuku-japan-night-tokyo.jpg",
     "https://i.pinimg.com/originals/81/4d/bf/814dbf1f482606f6d7d61365f6fb4d51.jpg",
     "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/287eab66-0f73-4b97-8e74-849c5f06d542/ddnitzs-a6c16223-5940-400a-9a8e-7845cdd519f6.jpg/v1/fill/w_1096,h_729,q_70,strp/bursts_of_ambient_color_by_anthonypresley_ddnitzs-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9Nzk5IiwicGF0aCI6IlwvZlwvMjg3ZWFiNjYtMGY3My00Yjk3LThlNzQtODQ5YzVmMDZkNTQyXC9kZG5pdHpzLWE2YzE2MjIzLTU5NDAtNDAwYS05YThlLTc4NDVjZGQ1MTlmNi5qcGciLCJ3aWR0aCI6Ijw9MTIwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.MjIB5xtwDL7_vaJufBCgjXW7JJei7m4Mc44kKyCznvc",

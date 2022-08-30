@@ -17,6 +17,7 @@ import photo1 from "../../assets/photo1.jpg";
 import back1 from "../../assets/back1.jpg";
 import photo2 from "../../assets/photo2.jpg";
 import back2 from "../../assets/back2.jpg";
+import MobileDetect from "mobile-detect";
 
 function App() {
   let firtsLine: string | JSX.Element[] = "sample";
@@ -27,8 +28,11 @@ function App() {
   const images = useRef<(HTMLDivElement | null)[]>([]);
   const letters = useRef<(HTMLSpanElement | null)[]>([]);
   const loadingScreen = useRef<HTMLDivElement>(null);
+  const loadingID = useRef(0);
 
   const { ref: container, width: widthContainer } = useResizeDetector();
+
+  const isMobile = new MobileDetect(window.navigator.userAgent);
 
   const letterSpansFromString = (str: string, shift: number = 0) => {
     return Array.from(str).map((letter, i) => (
@@ -53,7 +57,10 @@ function App() {
   secondLine = letterSpansFromString(secondLine, firtsLine.length);
 
   useEffect(() => {
-    if (widthContainer) setWidthImage(widthContainer * 0.4);
+    if (widthContainer)
+      setWidthImage(
+        window.innerWidth > 550 ? widthContainer * 0.4 : widthContainer
+      );
   }, [widthContainer]);
 
   const init = () => {
@@ -85,6 +92,7 @@ function App() {
 
   useEffect(() => {
     if (!loaded || !loadingScreen.current) return;
+    document.body.style.height = "auto";
     gsap
       .to(loadingScreen.current, {
         opacity: 0,
@@ -95,10 +103,20 @@ function App() {
   }, [loaded]);
 
   useEffect(() => {
-    window.addEventListener("load", () => setLoaded(true));
+    loading();
   }, []);
 
-  console.log("test", loaded);
+  const loading = () => {
+
+    if (document.readyState === "complete") {
+      setLoaded(true);
+      cancelAnimationFrame(loadingID.current);
+      return;
+    }
+
+    loadingID.current = requestAnimationFrame(loading);
+  };
+
   return (
     <div>
       <div className={cl.container} ref={container}>
@@ -138,7 +156,7 @@ function App() {
         </div>
 
         <div className={cl.button__wrapper}>
-          <Button text="test text" />
+          <Button text="do nothing" />
         </div>
       </div>
       <LineText />
@@ -147,7 +165,7 @@ function App() {
       <RightImage />
       <div className={cl.container}>
         <div className={cl.button__wrapper}>
-          <Button text="test text" />
+          <Button text="do nothing" />
         </div>
         <WiseWords />
       </div>
@@ -156,7 +174,7 @@ function App() {
       <SliderX />
       <LoadingScreen ref={loadingScreen} />
 
-      <Cursor />
+      {!isMobile.mobile() && <Cursor />}
     </div>
   );
 }

@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.6",
     "gh-pages": "^4.0.0",
     "gsap": "^3.11.0",
+    "mobile-detect": "^1.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-resize-detector": "^7.1.2",

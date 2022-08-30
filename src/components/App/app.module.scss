@@ -5,12 +5,17 @@ html{
   color: $secondary-color;
   height: 100%;
   overflow-x: hidden;
+  // overflow: auto;
 }
 
 body{
+  position: absolute;
   overflow-y: hidden;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  width: 100vw;
+  // height: 100vh;
+  // -webkit-overflow-scrolling: touch;
+  // overflow: hidden;
 }
 
 *{
@@ -21,6 +26,7 @@ body{
 
 .container{
   max-width: 1440px;
+  // overflow-y: hidden;
   width: 100vw;
   position: relative;
   padding: 0 100px 0 300px;
@@ -30,6 +36,7 @@ body{
 .title{
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
   margin-bottom: 60px;
   width: 100%;
   font-size: 160px;
@@ -108,6 +115,45 @@ body{
     &__down{
       margin-top: -10px;
       margin-right: 200px;
+    }
+  }
+}
+@media (max-width: 535px) {
+  .title{
+    font-size: 60px;
+    line-height: 60px;
+    &__down{
+      margin-top: -10px;
+      margin-right: 150px;
+    }
+    &__hidden{
+      opacity:1
+    }
+  }
+  .images{
+    display: block;
+    &__item{
+      margin-top: 30px;
+    }
+  }
+}
+@media (max-width: 430px) {
+  .title{
+    font-size: 40px;
+    line-height: 40px;
+    &__down{
+      margin-top: -5px;
+      margin-right: 100px;
+    }
+  }
+}
+@media (max-width: 330px) {
+  .title{
+    font-size: 35px;
+    line-height: 35px;
+    &__down{
+      margin-top: -5px;
+      margin-right: 86px;
     }
   }
 }

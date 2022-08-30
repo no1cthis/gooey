@@ -46,3 +46,20 @@ font-size: 24px;
         margin-right: 20px;
     }
   }
+@media (max-width: 580px) {
+    .wrapper{
+        justify-content: center;
+        margin-left: -65px;
+        width: 100vw;
+    }
+    .quote{
+        width: 48vw;
+    }
+    .quote__wrapper{
+            height: 200px;
+        }
+    .author__wrapper{
+        width: 100px;
+        margin-right: 20px;
+    }
+  }
